@@ -649,9 +649,11 @@ impl Discord {
 			)
 		}
 
-		let tls = hyper_native_tls::NativeTlsClient::new().expect("Error initializing NativeTlsClient");
+		let tls =
+			hyper_native_tls::NativeTlsClient::new().expect("Error initializing NativeTlsClient");
 		let connector = hyper::net::HttpsConnector::new(tls);
-		let mut request = hyper::client::Request::with_connector(hyper::method::Method::Post, url, &connector)?;
+		let mut request =
+			hyper::client::Request::with_connector(hyper::method::Method::Post, url, &connector)?;
 		request
 			.headers_mut()
 			.set(hyper::header::Authorization(self.token.clone()));
@@ -1478,7 +1480,9 @@ impl Discord {
 		shard_id: u8,
 		total_shards: u8,
 	) -> Result<(Connection, ReadyEvent)> {
-		self.connection_builder()?.with_shard(shard_id, total_shards).connect()
+		self.connection_builder()?
+			.with_shard(shard_id, total_shards)
+			.connect()
 	}
 
 	/// Prepare to establish a websocket connection over which events can be
@@ -1493,7 +1497,9 @@ impl Discord {
 		let mut value: BTreeMap<String, String> = serde_json::from_reader(response)?;
 		match value.remove("url") {
 			Some(url) => Ok(url),
-			None => Err(Error::Protocol("Response missing \"url\" in Discord::get_gateway_url()"))
+			None => Err(Error::Protocol(
+				"Response missing \"url\" in Discord::get_gateway_url()",
+			)),
 		}
 	}
 }
